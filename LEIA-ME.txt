@@ -1,0 +1,4 @@
+K1 · Prova de Natal — app web instalável (PWA)
+1) Alojar esta pasta num servidor HTTPS (ex.: GitHub Pages, Netlify). O service worker só funciona com HTTPS.
+2) No iPhone, abrir o endereço no Safari > Partilhar > "Adicionar ao ecrã principal".
+3) Abre em ecrã inteiro, funciona sem rede depois da 1.ª abertura. Os registos ficam guardados no iPhone (localStorage); apagar os dados do Safari/app apaga-os.
