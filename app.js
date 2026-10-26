@@ -1,18 +1,18 @@
 const DIAS=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 const A=[
-{s:"Descanso",c:"Opcional: corrida 30' Z1",z:"—",t:"descanso"},
+{s:"Descanso",c:"—",z:"—",t:"descanso"},
 {s:"Rio: treino do clube adaptado a Z2, 14–16 km (4×8' Z2 alta, sem os 2' fortes)",c:"Ginásio A (força máxima)",z:"Z2 · FC 70–80% · RPE 4–5 · 62–72 rpm",t:"normal"},
-{s:"Piscina com o grupo (natação + apneia)",c:"Tarde: rio 50–60' Z1–Z2 + técnica",z:"Z1–Z2 · RPE 3–5",t:"duro"},
+{s:"Piscina: treino de grupo do clube – natação + apneia",c:"Tarde: corrida 30' Z1–Z2",z:"Z1–Z2 · RPE 3–5",t:"duro"},
 {s:"Rio: QUALIDADE 1 — limiar longo (ex.: 3×12'→3')",c:"Corrida 30–40' Z1–Z2",z:"Z3 · FC 80–88% · RPE 6–7 · 72–82 rpm",t:"normal"},
-{s:"Piscina com o grupo",c:"Rio 60' Z2 + ginásio B",z:"Z2 · RPE 4–5",t:"duro"},
+{s:"Piscina: treino de grupo do clube – natação + apneia",c:"Noite: ginásio B",z:"Z2 · RPE 4–5",t:"duro"},
 {s:"Rio 60–70' Z2 + 6×15'' acelerações soltas",c:"Ginásio C (ombros, curto)",z:"Z2 · RPE 4–5 · 62–72 rpm",t:"normal"},
 {s:"Rio com o grupo: ondas com teto Z2 (dez: Z3), depois prolongar (16–20 km)",c:"Dezembro: QUALIDADE 2 (ritmo 5 km)",z:"Z2 (dez: Z3–Z4) · RPE 4–5",t:"duro"}];
 const B=[
-{s:"Descanso ou corrida 30' Z1",c:"—",z:"Z1",t:"descanso"},
+{s:"Descanso",c:"—",z:"Z1",t:"descanso"},
 {s:"Almoço 60': rio Z2 contínuo + técnica",c:"Noite: ginásio A",z:"Z2 · FC 70–80% · RPE 4–5",t:"normal"},
-{s:"Almoço: piscina (versão curta)",c:"—",z:"Z1–Z2",t:"normal"},
+{s:"Almoço: rio curto 45–50' Z2 / técnica (sem piscina)",c:"—",z:"Z1–Z2",t:"normal"},
 {s:"Almoço 60': QUALIDADE 1 — 3×10'→2' limiar",c:"Noite: ginásio B",z:"Z3 · FC 80–88% · RPE 6–7 · 72–82 rpm",t:"normal"},
-{s:"Almoço: piscina (versão curta)",c:"Noite (opcional): ginásio C",z:"Z1–Z2",t:"normal"},
+{s:"Almoço: corrida ~40' Z2 (sem piscina)",c:"Noite (opcional): ginásio C",z:"Z1–Z2",t:"normal"},
 {s:"Almoço 60': rio Z2 + 6×15'' acelerações",c:"—",z:"Z2 · RPE 4–5",t:"normal"},
 {s:"Rio com o grupo em Z2, prolongar para 14–18 km",c:"Dezembro: QUALIDADE 2",z:"Z2 (dez: Z3–Z4)",t:"duro"}];
 const FASES=[
@@ -34,6 +34,25 @@ const TAPER=[["D-10 a D-7","Volume −30%, 3×1 km ritmo de prova. Último giná
 const ADAPT=[["Seg 4×5' + 4×8' + 4×2' forte","4×8' a Z2 alta, sem os 2' fortes; 15' aquecimento e retorno"],["Ter 3×(10×1'→1')","3×10'→3' Z3, ou os 1' a Z3 (não forte)"],["Qua fartlek 12×3' 70/90%","Nov: 6×3' Z2 alta/3' Z2. Dez: 8×3' ritmo 5 km/3' Z2"],["Qui 4×8' ritmo de contra","Z2 alta–Z3 baixa; foco na técnica"],["Sex 2×(10×2'→1') forte","Nov: 4×6'→2' Z3. Dez: 4×1 km ritmo 5 km"],["Sáb 4×12' troca de ondas","Com o grupo, teto de FC Z2 (dez: Z3), depois prolongar"],["Araújo 2×3'45 / 4×1000 m 100%","Adiar para a pista; dez: 3×1500 m ritmo 5 km"],["4×40'' 100% / saídas 5''","6–8×15'' acelerações soltas"],["Piscina e corrida do clube","Manter; corrida em Z1–Z2"]];
 const GYM=[["A — Força máxima","Remada deitada no banco, supino, elevações com peso, peso morto romeno, agachamento frontal","4–5 × 3–5 (RPE 8), descanso 3'"],["B — Força + core","Remada unilateral, press landmine, peso morto unilateral, prancha lateral, Pallof press, rotação com cabo","3–4 × 6–8; core 3 × 30–45''"],["C — Ombros (curto)","Rotação externa com elástico, face pull, Y-T-W, serratus wall slide, mobilidade torácica","2–3 × 12–15 (também no aquecimento de A e B)"]];
 
+const BK={rio:["🚣","Rio","#3b82f6"],pis:["🏊","Piscina","#06b6d4"],cor:["🏃","Corrida","#f59e0b"],gin:["🏋️","Ginásio","#a855f7"],des:["😴","Descanso","#64748b"]};
+const SCH={A:[
+[["des","—","Descanso total. Dormir bem, comer como dia de descanso.","—"]],
+[["rio","manhã","Treino do clube adaptado a Z2, 14–16 km (4×8' Z2 alta, sem os 2' fortes)","Z2 · FC 70–80% · RPE 4–5 · 62–72 rpm"],["gin","noite","Sessão A — força máxima","RPE 7–8 nas séries","A"]],
+[["pis","manhã","Treino de grupo do clube – natação + apneia","Z1–Z2 · RPE 4–5 (apneia sem forçar)"],["cor","tarde","Corrida 30' contínua","Z1–Z2 · RPE 3–4"]],
+[["rio","manhã","QUALIDADE 1 — limiar longo (ex.: 3×12'→3')","Z3 · FC 80–88% · RPE 6–7 · 72–82 rpm"],["cor","tarde","Corrida 30–40' solta","Z1–Z2 · RPE 3–4"]],
+[["pis","manhã","Treino de grupo do clube – natação + apneia","Z1–Z2 · RPE 4–5 (apneia sem forçar)"],["gin","noite","Sessão B — potência/resistência","RPE 7","B"]],
+[["rio","manhã","60–70' Z2 + 6×15'' acelerações soltas","Z2 · RPE 4–5 · 62–72 rpm"],["gin","tarde","Sessão C — ombros, curta","RPE 6","C"]],
+[["rio","manhã","Grupo: ondas com teto Z2 (dez: Z3), depois prolongar 16–20 km","Z2 (dez: Z3–Z4 · QUALIDADE 2) · RPE 4–5"]]],
+B:[
+[["des","—","Descanso total.","—"]],
+[["rio","almoço","60' Z2 contínuo + técnica","Z2 · FC 70–80% · RPE 4–5"],["gin","noite","Sessão A — força máxima","RPE 7–8 nas séries","A"]],
+[["rio","almoço","Rio curto 45–50' Z2 / técnica (Semana B: sem piscina)","Z2 · RPE 3–4"]],
+[["rio","almoço","60': QUALIDADE 1 — 3×10'→2' limiar","Z3 · FC 80–88% · RPE 6–7 · 72–82 rpm"],["gin","noite","Sessão B — potência/resistência","RPE 7","B"]],
+[["cor","almoço","Corrida ~40' (Semana B: sem piscina)","Z2 · RPE 4"],["gin","noite","Sessão C — ombros, curta (opcional)","RPE 6","C"]],
+[["rio","almoço","60' Z2 + 6×15'' acelerações","Z2 · RPE 4–5"]],
+[["rio","almoço","Grupo em Z2, prolongar para 14–18 km","Z2 (dez: Z3–Z4 · QUALIDADE 2)"]]]};
+const blk=b=>{const k=BK[b[0]];return `<div class="blk" style="border-left:4px solid ${k[2]}"><p class="bh"><span>${k[0]} ${k[1]}</span><span class="tm">${b[1]}</span></p><p>${b[2]}</p>${b[3]!=="—"?`<p class="small">🎯 ${b[3]}</p>`:""}${b[4]?`<button class="primary" style="margin-top:8px" data-a="go:${b[4]}">Treino de hoje · Sessão ${b[4]}</button>`:""}</div>`};
+const sch=()=>SCH[S.wk];
 const KEY="k1-natal-registo";
 const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const hoje=iso(new Date());
@@ -49,12 +68,12 @@ const macros=n=>kv("Energia",n.kcal+" kcal")+kv("Proteína",n.p+" g")+kv("Hidrat
 const tipo=()=>S.nt||plano()[new Date().getDay()].t;
 const alvo=(m,g)=>g==="v"?0:MEALS[m].t[tipo()][{h:0,p:1,g:2}[g]];
 
-function hojeV(){const d=plano()[S.dia],fi=faseDe(hoje),f=FASES[fi];
-return `<div class="pills">${DIAS.map((x,i)=>`<button class="pill ${i===S.dia?"on":""}" data-a="dia:${i}">${x}</button>`).join("")}</div>`+
-card(`${DIAS[S.dia]} · ${f?f.nome:"antes do bloco (começa 2 nov)"}`,`<p class="big">${d.s}</p><p>+ ${d.c}</p>`)+
-card("Alvos de intensidade",`<p>${d.z}</p>`)+(f?card("Qualidade desta semana",`<p>${f.q}</p><p>${f.r} · alvo ${f.km} km</p>`):"")+
+function hojeV(){const d=plano()[S.dia],bs=sch()[S.dia],fi=faseDe(hoje),f=FASES[fi];
+return `<div class="pills">${DIAS.map((x,i)=>`<button class="pill ${i===S.dia?"on":""}" data-a="dia:${i}">${sch()[i].map(b=>BK[b[0]][0]).join("")} ${x}</button>`).join("")}</div>`+
+card(`${DIAS[S.dia]} · Semana ${S.wk} · ${f?f.nome:"antes do bloco (começa 2 nov)"}`,bs.map(blk).join(""))+(f?card("Qualidade desta semana",`<p>${f.q}</p><p>${f.r} · alvo ${f.km} km</p>`):"")+
 card("Alimentação · dia "+d.t,macros(NUT[d.t]))+card("Lembrete de ritmo","<p>1.ª série no máx. 2–3 s/500 mais rápida que a média. Recuperações a remar em Z1. Séries em par: a favor e contra a corrente.</p>")}
-function semanaV(){const p=plano();return [1,2,3,4,5,6,0].map(j=>card(`${DIAS[j]} · ${p[j].t}`,`<p class="big" style="font-size:16px">${p[j].s}</p><p>+ ${p[j].c}</p><p class="small">${p[j].z}</p>`)).join("")+card("Zonas",ZONAS.map(z=>kv(z[0],z[1])).join("")+"<p>Em novembro nada acima de Z3, exceto acelerações. ~80% do tempo em Z1–Z2.</p>")}
+function semanaV(){const s=sch();return card(`Semana ${S.wk} · grelha`,`<div class="grid">${[1,2,3,4,5,6,0].map(j=>`<button class="gd" data-a="vd:${j}"><b>${DIAS[j]}</b>${s[j].map(b=>`<span style="color:${BK[b[0]][2]}">${BK[b[0]][0]}</span><small>${b[1]}</small>`).join("")}</button>`).join("")}</div><p class="small">${S.wk==="A"?"Semana A: piscina ter/qui (clube), corrida 2×, ginásio seg/qui/sex.":"Semana B: água só ao almoço, SEM piscina (ter = rio curto, qui = corrida), ginásio à noite seg/qua/(qui)."}</p>`)+
+[1,2,3,4,5,6,0].map(j=>card(`${DIAS[j]} · ${plano()[j].t}`,s[j].map(blk).join(""))).join("")+card("Zonas",ZONAS.map(z=>kv(z[0],z[1])).join("")+"<p>Em novembro nada acima de Z3, exceto acelerações. ~80% do tempo em Z1–Z2.</p>")}
 function planoV(){const fi=faseDe(hoje);return FASES.map((x,i)=>card(`Semana de ${x.ini.slice(8)}/${x.ini.slice(5,7)}${i===fi?" · agora":""}`,`<p class="big">${x.nome} · ${x.km} km</p><div class="bar"><div style="width:${x.km/62*100}%"></div></div><p>Qualidade: ${x.q}</p><p>${x.r}</p>`,i===fi?"now":"")).join("")+
 card("Afinação final",TAPER.map(t=>`<div class="kv" style="display:block"><p><b style="color:#f2f4f8">${t[0]}</b></p><p>${t[1]}</p></div>`).join(""))+
 card("Adaptar treinos do clube",ADAPT.map(t=>`<div class="kv" style="display:block"><p style="color:#f2f4f8">${t[0]}</p><p>→ ${t[1]}</p></div>`).join(""))+
@@ -110,7 +129,7 @@ document.getElementById("app").innerHTML=TABS.find(t=>t[0]===S.tab)[2]();
 document.getElementById("nav").innerHTML=TABS.map(t=>`<button class="${S.tab===t[0]?"on":""}" data-a="tab:${t[0]}">${t[1]}</button>`).join("")}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;const[k,v]=b.dataset.a.split(":");
 if(k==="tab"){S.tab=v;S.gs=null;S.meal=-1;S.grp=null;S.food=-1;scrollTo(0,0)}else if(k==="wk"){S.wk=v;localStorage.setItem("k1-wk",v)}
-else if(k==="gs"){S.gs=v||null;scrollTo(0,0)}else if(k==="dia")S.dia=+v;else if(k==="nt")S.nt=v;else if(k==="meal"){S.meal=+v;S.grp=null;S.food=-1}else if(k==="grp"){S.grp=v||null;S.food=-1}else if(k==="food")S.food=+v;
+else if(k==="gs"){S.gs=v||null;scrollTo(0,0)}else if(k==="dia")S.dia=+v;else if(k==="go"){S.tab="gym";S.gs=v;scrollTo(0,0)}else if(k==="vd"){S.dia=+v;S.tab="hoje";scrollTo(0,0)}else if(k==="nt")S.nt=v;else if(k==="meal"){S.meal=+v;S.grp=null;S.food=-1}else if(k==="grp"){S.grp=v||null;S.food=-1}else if(k==="food")S.food=+v;
 else if(k==="save"){S.logs.unshift({...S.f});localStorage.setItem(KEY,JSON.stringify(S.logs));S.f={d:hoje,km:"",min:"",fc:"",rpe:"",spm:"",notas:""}}
 else if(k==="del"){if(!confirm("Apagar este registo?"))return;S.logs.splice(+v,1);localStorage.setItem(KEY,JSON.stringify(S.logs))}
 render()});
