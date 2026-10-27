@@ -4,7 +4,7 @@ const A=[
 {s:"Rio: treino do clube adaptado a Z2, 14–16 km (4×8' Z2 alta, sem os 2' fortes)",c:"Ginásio A (força máxima)",z:"Z2 · FC 70–80% · RPE 4–5 · 62–72 rpm",t:"normal"},
 {s:"Piscina: treino de grupo do clube – natação + apneia",c:"Tarde: corrida 30' Z1–Z2",z:"Z1–Z2 · RPE 3–5",t:"duro"},
 {s:"Rio: QUALIDADE 1 — limiar longo (ex.: 3×12'→3')",c:"Corrida 30–40' Z1–Z2",z:"Z3 · FC 80–88% · RPE 6–7 · 72–82 rpm",t:"normal"},
-{s:"Piscina: treino de grupo do clube – natação + apneia",c:"Noite: ginásio B",z:"Z2 · RPE 4–5",t:"duro"},
+{s:"Rio — Z2 longo técnico: 60–75' contínuo (catch, rotação, pernas; opc. 4–6×1' a ritmo de prova, solto)",c:"Noite: ginásio B",z:"Z2 · RPE 3–4 · conversa · 62–72 rpm",t:"normal"},
 {s:"Rio 60–70' Z2 + 6×15'' acelerações soltas",c:"Ginásio C (ombros, curto)",z:"Z2 · RPE 4–5 · 62–72 rpm",t:"normal"},
 {s:"Rio com o grupo: ondas com teto Z2 (dez: Z3), depois prolongar (16–20 km)",c:"Dezembro: QUALIDADE 2 (ritmo 5 km)",z:"Z2 (dez: Z3–Z4) · RPE 4–5",t:"duro"}];
 const B=[
@@ -40,7 +40,7 @@ const SCH={A:[
 [["rio","manhã","Treino do clube adaptado a Z2, 14–16 km (4×8' Z2 alta, sem os 2' fortes)","Z2 · FC 70–80% · RPE 4–5 · 62–72 rpm"],["gin","noite","Sessão A — força máxima","RPE 7–8 nas séries","A"]],
 [["pis","manhã","Treino de grupo do clube – natação + apneia","Z1–Z2 · RPE 4–5 (apneia sem forçar)"],["cor","tarde","Corrida 30' contínua","Z1–Z2 · RPE 3–4"]],
 [["rio","manhã","QUALIDADE 1 — limiar longo (ex.: 3×12'→3')","Z3 · FC 80–88% · RPE 6–7 · 72–82 rpm"],["cor","tarde","Corrida 30–40' solta","Z1–Z2 · RPE 3–4"]],
-[["pis","manhã","Treino de grupo do clube – natação + apneia","Z1–Z2 · RPE 4–5 (apneia sem forçar)"],["gin","noite","Sessão B — potência/resistência","RPE 7","B"]],
+[["rio","manhã","Rio — Z2 longo técnico: 60–75' contínuo, foco no catch, rotação e pernas. Opcional: 4–6×1' a ritmo de prova (cadência de prova), solto, dentro da sessão","Z2 · RPE 3–4 · ritmo de conversa · 62–72 rpm"],["gin","noite","Sessão B — potência/resistência","RPE 7","B"]],
 [["rio","manhã","60–70' Z2 + 6×15'' acelerações soltas","Z2 · RPE 4–5 · 62–72 rpm"],["gin","tarde","Sessão C — ombros, curta","RPE 6","C"]],
 [["rio","manhã","Grupo: ondas com teto Z2 (dez: Z3), depois prolongar 16–20 km","Z2 (dez: Z3–Z4 · QUALIDADE 2) · RPE 4–5"]]],
 B:[
@@ -85,7 +85,7 @@ function hojeV(){const d=plano()[S.dia],bs=sch()[S.dia],fi=faseDe(hoje),f=FASES[
 return `<div class="pills">${DIAS.map((x,i)=>`<button class="pill ${i===S.dia?"on":""}" data-a="dia:${i}">${sch()[i].map(b=>BK[b[0]][0]).join("")} ${x}</button>`).join("")}</div>`+
 card(`${DIAS[S.dia]} · Semana ${S.wk} · ${f?f.nome:"antes do bloco (começa 2 nov)"}`,bs.map(blk).join(""))+(f?card("Qualidade desta semana",`<p>${f.q}</p><p>${f.r} · alvo ${f.km} km</p>`):"")+
 card("Alimentação · dia "+d.t,macros(NUT[d.t]))+card("Lembrete de ritmo","<p>1.ª série no máx. 2–3 s/500 mais rápida que a média. Recuperações a remar em Z1. Séries em par: a favor e contra a corrente.</p>")}
-function semanaV(){const s=sch();return card(`Semana ${S.wk} · grelha`,`<div class="grid">${[1,2,3,4,5,6,0].map(j=>`<button class="gd" data-a="vd:${j}"><b>${DIAS[j]}</b>${s[j].map(b=>`<span style="color:${BK[b[0]][2]}">${BK[b[0]][0]}</span><small>${b[1]}</small>`).join("")}</button>`).join("")}</div><p class="small">${S.wk==="A"?"Semana A: piscina ter/qui (clube), corrida 2×, ginásio seg/qui/sex.":"Semana B: água só ao almoço, SEM piscina (ter = rio curto, qui = corrida), ginásio à noite seg/qua/(qui)."}</p>`)+
+function semanaV(){const s=sch();return card(`Semana ${S.wk} · grelha`,`<div class="grid">${[1,2,3,4,5,6,0].map(j=>`<button class="gd" data-a="vd:${j}"><b>${DIAS[j]}</b>${s[j].map(b=>`<span style="color:${BK[b[0]][2]}">${BK[b[0]][0]}</span><small>${b[1]}</small>`).join("")}</button>`).join("")}</div><p class="small">${S.wk==="A"?"Semana A: piscina só à terça (clube, 1 natação/semana), qui = rio Z2 longo técnico, corrida 2×, ginásio seg/qui/sex. Até ao fim de novembro: 1 natação/semana; em dezembro, considerar trocar também a piscina de terça por rio.":"Semana B: água só ao almoço, SEM piscina (ter = rio curto, qui = corrida), ginásio à noite seg/qua/(qui)."}</p>`)+
 [1,2,3,4,5,6,0].map(j=>card(`${DIAS[j]} · ${plano()[j].t}`,s[j].map(blk).join(""))).join("")+card("Zonas",ZONAS.map(z=>kv(z[0],z[1])).join("")+"<p>Em novembro nada acima de Z3, exceto acelerações. ~80% do tempo em Z1–Z2.</p>")}
 function planoV(){const fi=faseDe(hoje);return FASES.map((x,i)=>card(`Semana de ${x.ini.slice(8)}/${x.ini.slice(5,7)}${i===fi?" · agora":""}`,`<p class="big">${x.nome} · ${x.km} km</p><div class="bar"><div style="width:${x.km/62*100}%"></div></div><p>Qualidade: ${x.q}</p><p>${x.r}</p>`,i===fi?"now":"")).join("")+
 card("Afinação final",TAPER.map(t=>`<div class="kv" style="display:block"><p><b style="color:#f2f4f8">${t[0]}</b></p><p>${t[1]}</p></div>`).join(""))+
