@@ -72,7 +72,7 @@ const hoje=iso(new Date());
 const faseDe=d=>{let i=-1;FASES.forEach((f,k)=>{if(d>=f.ini)i=k});return i};
 const semK=d=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()-((x.getDay()+6)%7));return iso(x)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const S={tab:"hoje",wk:localStorage.getItem("k1-wk")||"A",dia:new Date().getDay(),nt:null,meal:-1,grp:null,food:-1,logs:JSON.parse(localStorage.getItem(KEY)||"[]"),f:{d:hoje,km:"",min:"",fc:"",rpe:"",spm:"",notas:""}};
+const S={tab:"hoje",wk:localStorage.getItem("k1-wk")||"A",dia:new Date().getDay(),nt:null,meal:-1,grp:null,food:-1,logs:JSON.parse(localStorage.getItem(KEY)||"[]"),f:{d:hoje,km:"",min:"",fc:"",rpe:"",spm:"",notas:""},hPer:"semana",hOff:0,hf:null};
 const plano=()=>S.wk==="A"?A:B;
 const card=(t,b,cls="")=>`<div class="card ${cls}"><p class="h">${t}</p>${b}</div>`;
 const kv=(k,v)=>`<div class="kv"><span>${k}</span><b>${v}</b></div>`;
@@ -148,17 +148,89 @@ return h+`</div>`}
 function ssave(id){const nm=decodeURIComponent(id),A=GL(),H=A[nm]||[],ins=[...document.querySelectorAll("[data-sk]")].filter(x=>x.dataset.sk.split("|")[0]===id),sets=[];
 ins.forEach(x=>{const[,j,f]=x.dataset.sk.split("|");sets[j]=sets[j]||{kg:"",r:""};sets[j][f]=x.value.trim().replace(",",".")});
 if(!sets.some(x=>x.kg||x.r))return;const i=H.findIndex(r=>r.d===hoje);if(i>=0)H[i].sets=sets;else H.push({d:hoje,sets});H.sort((a,b)=>a.d<b.d?1:-1);A[nm]=H;localStorage.setItem(GKEY,JSON.stringify(A))}
-const TABS=[["hoje","Hoje",hojeV],["semana","Semana",semanaV],["plano","Plano",planoV],["gym","Ginásio",gymV],["comida","Nutrição",nutV],["registo","Registo",regV],["info","Info",infoV]];
+
+/* === Histórico de treinos === */
+const HKEY="k1-historico";
+const HT={rio:["🚣","Rio","#3b82f6"],natacao:["🏊","Natação","#06b6d4"],corrida:["🏃","Corrida","#f59e0b"],ginasio:["🏋️","Ginásio","#a855f7"]};
+const HSEED=[
+{id:"s20261026-gin-a",d:"2026-10-26",tipo:"ginasio",sec:null,dist:null,pace:"",fc:null,rpe:null,forte:false,nota:"Ginásio A"},
+{id:"s20261027-nat",d:"2026-10-27",tipo:"natacao",sec:3626,dist:1575,pace:"3'56\"/100 m",fc:127,rpe:4,forte:false,nota:"Livres, séries curtas"},
+{id:"s20261028-rio",d:"2026-10-28",tipo:"rio",sec:3804,dist:11.12,pace:"2'51\"/500 m",fc:161,rpe:null,forte:true,nota:"Fartlek do clube 12×(3' a 70% + 3' a 90%); blocos fortes ~1'58\"–2'02\"/500 m; GPS falhou no início"},
+{id:"s20261029-nat",d:"2026-10-29",tipo:"natacao",sec:2589,dist:1500,pace:"2'52\"/100 m",fc:135,rpe:4,forte:false,nota:""},
+{id:"s20261029-gin-b",d:"2026-10-29",tipo:"ginasio",sec:null,dist:null,pace:"",fc:null,rpe:null,forte:false,nota:"Ginásio B"},
+{id:"s20261030-rio",d:"2026-10-30",tipo:"rio",sec:3832,dist:10.73,pace:"2'59\"/500 m",fc:158,rpe:7,forte:true,nota:"Séries 2' com 1' de recuperação, ~1'58\"–2'05\"/500 m, máx. 173 bpm"},
+{id:"s20261031-rio",d:"2026-10-31",tipo:"rio",sec:4211,dist:12.04,pace:"2'55\"/500 m",fc:144,rpe:6,forte:true,nota:"4×12' com 3' descanso; média geral inclui descansos"},
+{id:"s20261031-cor",d:"2026-10-31",tipo:"corrida",sec:920,dist:2.89,pace:"5'18\"/km",fc:168,rpe:7,forte:true,nota:"Demasiado forte para corrida complementar"}
+];
+const hLoad=()=>{let L;try{L=JSON.parse(localStorage.getItem(HKEY))}catch(e){L=null}if(!Array.isArray(L)){L=HSEED.map(x=>({...x}));localStorage.setItem(HKEY,JSON.stringify(L));return L}const ids=new Set(L.map(x=>x.id));let ch=false;HSEED.forEach(s=>{if(!ids.has(s.id)){L.push({...s});ch=true}});if(ch){L.sort((a,b)=>a.d===b.d?(a.tipo<b.tipo?1:a.tipo>b.tipo?-1:0):(a.d<b.d?1:-1));localStorage.setItem(HKEY,JSON.stringify(L))}return L};
+const hSave=L=>localStorage.setItem(HKEY,JSON.stringify(L));
+const hUid=()=>"s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const fmtSec=s=>{if(s==null||s===""||isNaN(s))return"—";s=Math.round(+s);const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return h?`${h}h${String(m).padStart(2,"0")}'${String(x).padStart(2,"0")}`:`${m}'${String(x).padStart(2,"0")}`};
+const fmtPaceSec=s=>{if(s==null||isNaN(s)||s<=0)return"—";s=Math.round(+s);return `${Math.floor(s/60)}'${String(s%60).padStart(2,"0")}"`};
+const parseDur=v=>{if(v==null||v==="")return null;v=String(v).trim().replace(",",".");
+const hms=v.match(/^(\d+)\s*[h:]\s*(\d+)\s*[':.]?\s*(\d+)\s*"?$/i);if(hms)return(+hms[1])*3600+(+hms[2])*60+(+hms[3]);
+const ms=v.match(/^(\d+)\s*[':]\s*(\d+)\s*"?$/);if(ms)return(+ms[1])*60+(+ms[2]);
+const n=+v;if(!isNaN(n))return n>500?Math.round(n):Math.round(n*60);return null};
+const hPace=x=>{if(x.pace)return x.pace;if(!x.sec||!x.dist)return"—";
+if(x.tipo==="rio")return fmtPaceSec(x.sec/(x.dist*2))+"/500 m";
+if(x.tipo==="natacao")return fmtPaceSec(x.sec/(x.dist/100))+"/100 m";
+if(x.tipo==="corrida")return fmtPaceSec(x.sec/x.dist)+"/km";return"—"};
+const hDistLbl=x=>{if(x.dist==null||x.dist==="")return"—";if(x.tipo==="natacao")return Math.round(x.dist)+" m";return(+x.dist).toFixed(2).replace(".",",")+" km"};
+const hIsHard=x=>!!x.forte||(+x.rpe>=7);
+const monOf=d=>{const x=new Date(d+"T12:00:00");x.setDate(1);return iso(x)};
+const addDays=(d,n)=>{const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return iso(x)};
+const addMonths=(d,n)=>{const x=new Date(d+"T12:00:00");x.setMonth(x.getMonth()+n);return iso(x)};
+const hEmpty=()=>({id:null,d:hoje,tipo:"rio",dur:"",dist:"",pace:"",fc:"",rpe:"",forte:false,nota:""});
+const hFrom=x=>({id:x.id,d:x.d,tipo:x.tipo,dur:x.sec!=null?(()=>{const s=Math.round(+x.sec),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`:`${m}:${String(ss).padStart(2,"0")}`})():"",dist:x.dist==null?"":String(x.dist),pace:x.pace||"",fc:x.fc==null?"":String(x.fc),rpe:x.rpe==null?"":String(x.rpe),forte:!!x.forte,nota:x.nota||""});
+function hPeriod(){const per=S.hPer||"semana",off=S.hOff||0;if(per==="semana"){const start=addDays(semK(hoje),-7*off),end=addDays(start,6);return{per,start,end,label:`${start.slice(8)}/${start.slice(5,7)} – ${end.slice(8)}/${end.slice(5,7)}`}}
+const start=addMonths(monOf(hoje),-off),end=addDays(addMonths(start,1),-1);const meses=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];return{per,start,end,label:`${meses[+start.slice(5,7)-1]} ${start.slice(0,4)}`}}
+function hInRange(L,start,end){return L.filter(x=>x.d>=start&&x.d<=end)}
+function hBars(L,per,start,end){const buckets=[];if(per==="semana"){for(let i=0;i<7;i++){const d=addDays(start,i);const secs=L.filter(x=>x.d===d).reduce((a,x)=>a+(x.sec||0),0);buckets.push({lab:DIAS[new Date(d+"T12:00:00").getDay()],sec:secs})}}
+else{const weeks=[];let w=semK(start);while(w<=end){weeks.push(w);w=addDays(w,7)}weeks.forEach((w,i)=>{const we=addDays(w,6);const secs=L.filter(x=>x.d>=w&&x.d<=we&&x.d>=start&&x.d<=end).reduce((a,x)=>a+(x.sec||0),0);buckets.push({lab:"S"+(i+1),sec:secs})})}
+const mx=Math.max(1,...buckets.map(b=>b.sec));
+return `<div class="hchart">${buckets.map(b=>`<div class="hbar"><div class="hfill" style="height:${Math.max(b.sec?4:0,Math.round(b.sec/mx*80))}px" title="${fmtSec(b.sec)}"></div><span class="small">${b.lab}</span></div>`).join("")}</div>`}
+function histV(){const L=hLoad().slice().sort((a,b)=>a.d===b.d?(a.tipo<b.tipo?1:-1):(a.d<b.d?1:-1));
+const P=hPeriod(),R=hInRange(L,P.start,P.end);
+const totSec=R.reduce((a,x)=>a+(x.sec||0),0);
+const rioKm=R.filter(x=>x.tipo==="rio").reduce((a,x)=>a+(+x.dist||0),0);
+const natM=R.filter(x=>x.tipo==="natacao").reduce((a,x)=>a+(+x.dist||0),0);
+const corKm=R.filter(x=>x.tipo==="corrida").reduce((a,x)=>a+(+x.dist||0),0);
+const byT={};Object.keys(HT).forEach(k=>byT[k]=R.filter(x=>x.tipo===k).length);
+const hard=R.filter(hIsHard).length;
+const F=S.hf||hEmpty();
+const editing=!!F.id;
+const inp=(k,l,t="text")=>`<label>${l}<input data-hf="${k}" type="${t}" value="${esc(F[k]==null?"":F[k])}"></label>`;
+const form=card(editing?"Editar sessão":"Nova sessão",`<div class="form">${inp("d","Data","date")}<label>Tipo<select data-hf="tipo">${Object.keys(HT).map(k=>`<option value="${k}"${F.tipo===k?" selected":""}>${HT[k][1]}</option>`).join("")}</select></label>${inp("dur","Duração (ex.: 1:03:24 ou 63:24)")}${inp("dist","Distância (km; natação em metros)")}${inp("pace","Ritmo médio (opcional)")}${inp("fc","FC média")}${inp("rpe","Esforço / RPE (1–10)")}<label class="chk"><input data-hf="forte" type="checkbox"${F.forte?" checked":""}> Marcar como forte / limiar</label>${inp("nota","Nota")}<button class="primary" data-a="hsave">${editing?"Atualizar":"Guardar"} sessão</button>${editing?`<button class="del" data-a="hcancel">Cancelar</button>`:""}</div>`);
+const list=L.length?L.map(x=>{const t=HT[x.tipo]||["?","?","#64748b"];const hd=hIsHard(x);let body="";if(x.tipo==="ginasio"){body=`<p class="small">${x.nota?esc(x.nota):"Ginásio"}${hd?" · <b>forte</b>":""}</p>`}else{body=`<p>${fmtSec(x.sec)} · ${hDistLbl(x)} · ${esc(hPace(x))}</p><p class="small">FC ${x.fc==null?"—":x.fc} · esforço ${x.rpe==null?"—":x.rpe}${hd?" · <b>forte</b>":""}</p>${x.nota?`<p>${esc(x.nota)}</p>`:""}`}return card(`${t[0]} ${t[1]} · ${esc(x.d)}`,body+`<button class="del" data-a="hedit:${esc(x.id)}">Editar</button> <button class="del" data-a="hdel:${esc(x.id)}">Apagar</button>`)}).join(""):card("Sessões",`<p class="small">Ainda sem treinos registados.</p>`);
+const tiposTxt=Object.keys(HT).filter(k=>byT[k]).map(k=>byT[k]+" "+HT[k][1].toLowerCase()).join(", ")||"—";
+const sum=card("Resumo",`<div class="pills"><button class="pill ${(P.per==="semana")?"on":""}" data-a="hper:semana">Semana</button><button class="pill ${(P.per==="mes")?"on":""}" data-a="hper:mes">Mês</button></div><div class="hnav"><button class="del" data-a="hoff:1">‹</button><p><b>${P.label}</b></p><button class="del" data-a="hoff:-1"${(S.hOff||0)<=0?" disabled":""}>›</button></div>${kv("Tempo total",fmtSec(totSec))}${kv("Rio",rioKm.toFixed(1).replace(".",",")+" km")}${kv("Natação",Math.round(natM)+" m")}${kv("Corrida",corKm.toFixed(2).replace(".",",")+" km")}${kv("Sessões",R.length+" ("+tiposTxt+")")}${kv("Sessões fortes",hard+" (RPE ≥ 7 ou marcadas)")}<p class="h" style="margin-top:10px">Tempo por ${P.per==="semana"?"dia":"semana"}</p>${hBars(R,P.per,P.start,P.end)}`);
+const io=card("Cópia de segurança",`<p class="small">Os dados ficam só neste aparelho. Exporta um JSON para não os perderes.</p><button class="primary" data-a="hexport">Exportar JSON</button> <button class="del" data-a="himport">Importar JSON</button><input id="hfile" type="file" accept="application/json,.json" hidden>`);
+return sum+form+`<p class="h">Todas as sessões</p>`+list+io}
+function hDoSave(){const F=S.hf||hEmpty();if(!F.d||!F.tipo)return;const L=hLoad();
+const row={id:F.id||hUid(),d:F.d,tipo:F.tipo,sec:parseDur(F.dur),dist:F.dist===""||F.dist==null?null:parseFloat(String(F.dist).replace(",",".")),pace:(F.pace||"").trim(),fc:F.fc===""||F.fc==null?null:parseFloat(String(F.fc).replace(",",".")),rpe:F.rpe===""||F.rpe==null?null:parseFloat(String(F.rpe).replace(",",".")),forte:!!F.forte,nota:(F.nota||"").trim()};
+if(row.dist!=null&&isNaN(row.dist))row.dist=null;if(row.fc!=null&&isNaN(row.fc))row.fc=null;if(row.rpe!=null&&isNaN(row.rpe))row.rpe=null;
+const i=L.findIndex(x=>x.id===row.id);if(i>=0)L[i]=row;else L.unshift(row);
+L.sort((a,b)=>a.d===b.d?(a.tipo<b.tipo?1:-1):(a.d<b.d?1:-1));hSave(L);S.hf=hEmpty()}
+function hDoExport(){const blob=new Blob([JSON.stringify(hLoad(),null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="k1-historico.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+function hDoImport(){const inp=document.getElementById("hfile");if(!inp)return;inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d))throw new Error("formato");if(!d.every(x=>x&&x.d&&x.tipo))throw new Error("campos");if(!confirm("Substituir o histórico atual por "+d.length+" sessões do ficheiro?"))return;hSave(d.map(x=>({id:x.id||hUid(),d:x.d,tipo:x.tipo,sec:x.sec==null?null:x.sec,dist:x.dist==null?null:x.dist,pace:x.pace||"",fc:x.fc==null?null:x.fc,rpe:x.rpe==null?null:x.rpe,forte:!!x.forte,nota:x.nota||""})));S.hf=hEmpty();render()}catch(e){alert("Ficheiro inválido.")}};r.readAsText(f);inp.value=""};inp.click()}
+
+const TABS=[["hoje","Hoje",hojeV],["semana","Semana",semanaV],["plano","Plano",planoV],["gym","Ginásio",gymV],["comida","Nutrição",nutV],["registo","Registo",regV],["hist","Histórico",histV],["info","Info",infoV]];
 function render(){const dp=Math.ceil((new Date("2026-12-19T12:00:00")-new Date(hoje+"T12:00:00"))/864e5);
 document.getElementById("cd").textContent=dp>0?`faltam ${dp} dias (19 dez, a confirmar)`:"prova: confirmar data";
 document.getElementById("wk").innerHTML=["A","B"].map(w=>`<button class="pill ${S.wk===w?"on":""}" data-a="wk:${w}">Semana ${w} ${w==="A"?"(livre)":"(filha)"}</button>`).join("");
 document.getElementById("app").innerHTML=TABS.find(t=>t[0]===S.tab)[2]();
 document.getElementById("nav").innerHTML=TABS.map(t=>`<button class="${S.tab===t[0]?"on":""}" data-a="tab:${t[0]}">${t[1]}</button>`).join("")}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;const[k,v]=b.dataset.a.split(":");
-if(k==="tab"){S.tab=v;S.gs=null;S.meal=-1;S.grp=null;S.food=-1;scrollTo(0,0)}else if(k==="wk"){S.wk=v;localStorage.setItem("k1-wk",v)}
+if(k==="tab"){S.tab=v;S.gs=null;S.meal=-1;S.grp=null;S.food=-1;if(v!=="hist")S.hf=null;scrollTo(0,0)}else if(k==="wk"){S.wk=v;localStorage.setItem("k1-wk",v)}
 else if(k==="ssave"){ssave(v)}else if(k==="shist"){const nm=decodeURIComponent(v);S.sh=S.sh===nm?null:nm}else if(k==="sdel"){const[id,dd]=v.split("|");if(!confirm("Apagar o registo de "+dd+"?"))return;const A=GL(),nm=decodeURIComponent(id);A[nm]=(A[nm]||[]).filter(r=>r.d!==dd);localStorage.setItem(GKEY,JSON.stringify(A))}else if(k==="gs"){S.gs=v||null;scrollTo(0,0)}else if(k==="dia")S.dia=+v;else if(k==="psave"){const kg=document.getElementById("pk").value,dd=document.getElementById("pd").value;if(!kg)return;const P=JSON.parse(localStorage.getItem(PKEY)||"[]"),ab=document.getElementById("pab").value,dor=document.getElementById("pdo").value,o={d:dd,kg};if(ab)o.ab=ab;if(dor)o.do=dor;P.push(o);P.sort((a,b)=>a.d<b.d?1:-1);localStorage.setItem(PKEY,JSON.stringify(P))}else if(k==="pdel"){const P=JSON.parse(localStorage.getItem(PKEY)||"[]");P.splice(+v,1);localStorage.setItem(PKEY,JSON.stringify(P))}else if(k==="go"){S.tab="gym";S.gs=v;scrollTo(0,0)}else if(k==="vd"){S.dia=+v;S.tab="hoje";scrollTo(0,0)}else if(k==="nt")S.nt=v;else if(k==="meal"){S.meal=+v;S.grp=null;S.food=-1}else if(k==="grp"){S.grp=v||null;S.food=-1}else if(k==="food")S.food=+v;
 else if(k==="save"){S.logs.unshift({...S.f});localStorage.setItem(KEY,JSON.stringify(S.logs));S.f={d:hoje,km:"",min:"",fc:"",rpe:"",spm:"",notas:""}}
 else if(k==="del"){if(!confirm("Apagar este registo?"))return;S.logs.splice(+v,1);localStorage.setItem(KEY,JSON.stringify(S.logs))}
+else if(k==="hper"){S.hPer=v;S.hOff=0}else if(k==="hoff"){S.hOff=Math.max(0,(S.hOff||0)+(+v))}
+else if(k==="hsave"){hDoSave()}else if(k==="hcancel"){S.hf=hEmpty()}
+else if(k==="hedit"){const L=hLoad(),x=L.find(z=>z.id===v);if(x){S.hf=hFrom(x);scrollTo(0,0)}}
+else if(k==="hdel"){if(!confirm("Apagar esta sessão?"))return;hSave(hLoad().filter(x=>x.id!==v));if(S.hf&&S.hf.id===v)S.hf=hEmpty()}
+else if(k==="hexport"){hDoExport();return}else if(k==="himport"){hDoImport();return}
 render()});
-document.addEventListener("input",e=>{const k=e.target.dataset&&e.target.dataset.f;if(k)S.f[k]=e.target.value});
+document.addEventListener("input",e=>{const t=e.target;if(t.dataset&&t.dataset.f)S.f[t.dataset.f]=t.value;if(t.dataset&&t.dataset.hf){S.hf=S.hf||hEmpty();if(t.type==="checkbox")S.hf[t.dataset.hf]=t.checked;else S.hf[t.dataset.hf]=t.value}});
+document.addEventListener("change",e=>{const t=e.target;if(t.dataset&&t.dataset.hf){S.hf=S.hf||hEmpty();if(t.type==="checkbox")S.hf[t.dataset.hf]=t.checked;else S.hf[t.dataset.hf]=t.value;if(t.tagName==="SELECT")render()}});
 render();
