@@ -102,19 +102,20 @@ const fk=(g,k)=>FOODS[g].find(f=>f.n+"|"+f.st===k);
 const gr=(f,t)=>Math.max(5,Math.round(t/f.per*100/5)*5);
 const cru=(f,g)=>f.y?` · cru: ~${Math.round(g/f.y/5)*5} g`:"";
 const lab=(f,t)=>{const g=gr(f,t);return f.u?`${Math.max(1,Math.round(g/55*2)/2)} ovos (${g} g)`:`${g} g de ${f.n.toLowerCase()} (${f.st})${cru(f,g)}`};
+function comboHTML(c){if(c.fix)return NUTX.formatPlate(c.plate,tipo(),{p:alvo(S.meal,"p"),h:alvo(S.meal,"h"),g:alvo(S.meal,"g")});return `<div class="kv" style="display:block"><p style="color:#f2f4f8;font-weight:600">${c.n}</p><p>${c.i.map(([k,g,fr])=>lab(fk(g,k),alvo(S.meal,g)*fr)).join(" + ")}${c.x?" · "+c.x:""}</p></div>`}
 const mlist=(m,g)=>g==="v"?FOODS.v:MEALS[m][g].map(k=>fk(g,k));
 function nutV(){const t=tipo(),N=NUT[t];
 if(S.meal<0)return `<p class="h">Tipo de dia</p><div class="pills">${["duro","normal","descanso"].map(k=>`<button class="pill ${k===t?"on":""}" data-a="nt:${k}">${k}</button>`).join("")}</div>`+card(N.lbl,macros(N))+
 `<p class="h">Refeições</p>`+MEALS.map((m,i)=>row(m.n,`H ${alvo(i,"h")} · P ${alvo(i,"p")} · G ${alvo(i,"g")} g`,"meal:"+i)).join("")+
 card("Como ler","<p>Todos os pesos são cozinhados (arroz, massa, carne e peixe), como no plano da nutricionista. Ao lado aparece o equivalente em cru. Cada grupo mostra alternativas equivalentes: escolha uma (ou metade de duas). Legumes à descrição. Gordura em gramas de azeite (ou equivalente).</p>")+
-card("Pré e pós-treino","<p>Antes (1–3 h): o lanche pré-treino leva hidratos fáceis, pouca gordura e fibra. Semana B: 60–90' antes do almoço-treino.</p><p>Durante (&gt; 75'): 30–60 g de hidratos por hora.</p><p>Pós-treino (até 1 h): 30 g de proteína + os hidratos da refeição Pós-treino. Opções portáteis para levar para o rio.</p><p>Água: 2,7–3,1 L/dia + 500–750 ml por hora de treino; repor 150% do peso perdido.</p><p>Em dia de descanso, o lanche pré-treino e o pós-treino são lanches normais.</p>")+
+card("Pré e pós-treino","<p>Antes (1–3 h): o lanche pré-treino leva hidratos fáceis, pouca gordura e fibra. Semana B: 60–90' antes do almoço-treino. As barras no lanche da tarde vão com iogurte ou skyr, banana e pão quando o treino está perto; cottage e tostas ficam para quando há mais tempo.</p><p>Durante (&gt; 75'): 30–60 g de hidratos por hora.</p><p>Pós-treino (até 1 h): 30 g de proteína + os hidratos da refeição Pós-treino. Opções portáteis para levar para o rio.</p><p>Água: 2,7–3,1 L/dia + 500–750 ml por hora de treino; repor 150% do peso perdido.</p><p>Em dia de descanso, o lanche pré-treino e o pós-treino são lanches normais.</p>")+
 card("Cálculo",CALC);
 const M=MEALS[S.meal];
 if(!S.grp){const eq=g=>{const a=alvo(S.meal,g);return `<p>${mlist(S.meal,g).map(f=>lab(f,a)).join(" <b>ou</b> ")}</p>`};
 return `<button class="back" data-a="meal:-1">‹ Refeições (${t})</button><p class="big">${M.n}</p>`+
 card(`Hidratos · ${alvo(S.meal,"h")} g`,eq("h"))+card(`Proteína · ${alvo(S.meal,"p")} g`,eq("p"))+card(`Gordura · ${alvo(S.meal,"g")} g`,eq("g"))+
 card("Legumes","<p>À descrição (almoço e jantar). Fruta extra: 1 peça.</p>")+
-card("Combinações prontas",M.c.map(c=>`<div class="kv" style="display:block"><p style="color:#f2f4f8;font-weight:600">${c.n}</p><p>${c.i.map(([k,g,fr])=>lab(fk(g,k),alvo(S.meal,g)*fr)).join(" + ")}${c.x?" · "+c.x:""}</p></div>`).join(""))+
+card("Combinações prontas",(M.snackNote?`<p class="small">${M.snackNote}</p>`:"")+M.c.map(comboHTML).filter(Boolean).join(""))+
 `<p class="h">Escolher um alimento</p>`+["h","p","g","v"].map(g=>row(GRP[g],g==="v"?"à descrição":alvo(S.meal,g)+" g","grp:"+g)).join("")}
 const L=mlist(S.meal,S.grp);
 if(S.food<0)return `<button class="back" data-a="grp:">‹ ${M.n}</button><p class="big">${GRP[S.grp]}${S.grp!=="v"?" · "+alvo(S.meal,S.grp)+" g":""}</p>`+L.map((x,i)=>row(x.n,x.st,"food:"+i)).join("");
@@ -130,7 +131,7 @@ card("Novo treino",`<div class="form">${inp("d","Data","date")}${inp("km","km")}
 S.logs.map((l,i)=>card(esc(l.d),`<p>${esc(l.km)} km · ${esc(l.min)} min · FC ${esc(l.fc)} · RPE ${esc(l.rpe)} · ${esc(l.spm)} rpm</p>${l.notas?`<p>${esc(l.notas)}</p>`:""}<button class="del" data-a="del:${i}">Apagar</button>`)).join("")}
 function infoV(){return card("Porquê este plano","<p>O plano do clube parece um bloco pré-controlos de 2000 m e pista. Em pré-época, 4 meses após o regresso, o que mais sobe o nível é base aeróbia, técnica e força.</p><p>• ~80% em Z1–Z2 • 1 qualidade/semana em nov, 2 em dez • limiar longo primeiro, ritmo de 5 km depois • sem sprints 100%, só acelerações • força máxima no ginásio.</p>")+
 card("Ponto de partida","<p>Outubro: 13 treinos, 106,6 km (média 8,2 km / 50').</p><p>5 km contínuo: 20:53 (2'05''/500).</p><p>Subida do Arade: 1:01h, 12.º sénior, ~3,5' parado a esvaziar o barco.</p><p>Corrigir: saídas rápidas demais e recuperações paradas. Treinar água agitada 1×/semana; bomba ou barco de maratona em provas de fundo.</p>")+
-card("Fonte dos alimentos","<p>Valores médios por 100 g da Tabela da Composição de Alimentos do INSA (portfir.insa.pt) e rótulos típicos (whey, skyr, manteiga de amendoim). Cru e cozinhado têm valores diferentes: pesar sempre no estado indicado. Os valores podem variar por marca.</p>")+
+card("Fonte dos alimentos","<p>Valores médios por 100 g da Tabela da Composição de Alimentos do INSA (portfir.insa.pt) e rótulos típicos (whey, skyr, manteiga de amendoim). Cru e cozinhado têm valores diferentes: pesar sempre no estado indicado. Os valores podem variar por marca. As duas barras de cereais (fruta; integral com arando) usam o rótulo por 100 g, sem marca na app. Iogurte, skyr, cottage, tostas, banana e clementina nas porções novas são aproximados.</p>")+
 card("Imagens dos exercícios","<p>free-exercise-db (github.com/yuhonas/free-exercise-db), domínio público (Unlicense). Algumas imagens são o exercício mais próximo disponível.</p>")+
 card("Suplementos","<p>D3, multivitamínico, ZMA, creatina (3–5 g/dia), proteína e ómega 3: permitidos. Preferir marcas com certificação de lote (ex.: Informed Sport).</p>")+
 card("Notas","<p>Data da prova assumida 19–20 dez: confirmar. Falar das adaptações com o treinador do clube.</p>")}

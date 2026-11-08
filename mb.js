@@ -7,8 +7,12 @@ const MBF=[// n, estado, P, H, G por 100 g (como pesado), y = cozido/cru, d = po
 ["Ovo cozido","1 ovo ≈ 50 g sem casca",12.6,1.1,10.6,0,100,50],["Claras","cruas / cozidas",11,0.7,0.2,0,150],
 ["Skyr","—",11,4,0.2,0,200],["Iogurte grego 0%","—",10,4,0,0,200],["Queijo fresco","—",9,3,4,0,100],["Queijo cottage","—",12,3,4,0,150],["Whey","pó",78,7,6,0,30],["Fiambre de peru","fatiado",19,1,2,0,60],
 ["Banana","sem casca",1.1,21,0.3,0,120],["Maçã","com casca",0.3,12,0.2,0,150],["Tâmaras","secas, sem caroço",2,65,0.4,0,40],["Mel","—",0.3,80,0,0,20],
-["Azeite","1 c. sopa ≈ 10 g",0,0,100,0,10],["Abacate","polpa",2,2,15,0,80],["Nozes","cruas",15,7,65,0,20],["Amêndoas","cruas",21,9,50,0,20],["Queijo flamengo / curado","—",25,0,27,0,30]
-].map(a=>({n:a[0],st:a[1],P:a[2],H:a[3],G:a[4],y:a[5],d:a[6],u:a[7]||0}));
+["Azeite","1 c. sopa ≈ 10 g",0,0,100,0,10],["Abacate","polpa",2,2,15,0,80],["Nozes","cruas",15,7,65,0,20],["Amêndoas","cruas",21,9,50,0,20],["Queijo flamengo / curado","—",25,0,27,0,30],
+["Barra de cereais de fruta","1 barra = 14,5 g (rótulo por 100 g)",5.3,71.5,7.1,0,14.5,14.5,"barra","barras"],
+["Barra de cereais integral com arando","1 barra = 21 g (rótulo por 100 g)",5.9,79,3.2,0,21,21,"barra","barras"],
+["Clementina","sem casca, 1 peça ≈ 75 g (valor aproximado)",0.9,10,0.2,0,75,75,"clementina","clementinas"],
+["Tostas","prontas, 1 tosta ≈ 10 g (valor aproximado)",12,70,5,0,30,10,"tosta","tostas"]
+].map(a=>({n:a[0],st:a[1],P:a[2],H:a[3],G:a[4],y:a[5],d:a[6],u:a[7]||0,un:a[8]||"",up:a[9]||""}));
 const MBI=n=>MBF.findIndex(f=>f.n===n);
 // x: gramas; lk: {i:g} fixos. Minimiza erro relativo nos 3 macros + pequena atração à porção típica.
 function mbSolve(ids,T,lk){lk=lk||{};const F=ids.map(i=>MBF[i]),n=F.length,free=F.map((_,j)=>!(ids[j] in lk));
@@ -22,15 +26,16 @@ if(ch<1e-4)break}
 const uj=F.findIndex((f,j)=>free[j]&&f.u);if(uj>=0){const u=F[uj].u,c=[Math.max(1,Math.floor(x[uj]/u)),Math.max(1,Math.ceil(x[uj]/u))];let best=null;for(const k of c){const L2={...lk,[ids[uj]]:k*u},r=mbSolve(ids,T,L2),e=((r.P-T.p)/T.p)**2*(r.P>T.p?.25:1)+((r.H-T.h)/Math.max(T.h,5))**2+((r.G-T.g)/T.g)**2;if(!best||e<best.e)best={...r,e}}delete best.e;return best}
 x=x.map((v,j)=>free[j]?(F[j].u?Math.max(1,Math.round(v/F[j].u))*F[j].u:Math.max(F[j].G>90?0:5,Math.round(v/5)*5)):v);
 const s=mac(x);return{x,P:s[0],H:s[1],G:s[2],K:4*s[0]+4*s[1]+9*s[2]}}
-if(typeof module!=="undefined"){module.exports={MBF,MBI,mbSolve}}else{
+function mbQty(f,g){if(!f.u)return g+" g";const n=Math.round(g/f.u*1000)/1000,one=Math.abs(n-1)<1e-6,word=one?(f.un||"ovo"):(f.up||((f.un||"ovo")==="ovo"?"ovos":(f.un||"ovo")+"s"));const ns=Number.isInteger(n)?String(n):String(n).replace(".",",");const gr=Math.round(g*10)/10,gs=Number.isInteger(gr)?String(gr):String(gr).replace(".",",");return ns+" "+word+" ("+gs+" g)"}
+if(typeof module!=="undefined"){module.exports={MBF,MBI,mbSolve,mbQty}}else{
 const FKEY="k1-mb-fav";S.mb=false;S.mbs=[];S.mbl={};S.mbq="";
 const favs=()=>{try{return JSON.parse(localStorage.getItem(FKEY))||[]}catch(e){return[]}};
 const dif=(v,t)=>{const d=Math.round(v-t),c=Math.abs(d)<=Math.max(3,t*.08)?"#22c55e":Math.abs(d)<=t*.2?"#f59e0b":"#ef4444";return `<span style="color:${c}">${d>0?"+":""}${d}</span>`};
 function mbV(){const M=MEALS[S.meal],T={p:alvo(S.meal,"p"),h:alvo(S.meal,"h"),g:alvo(S.meal,"g")},q=S.mbq.toLowerCase();
 let o=`<button class="back" data-b="close">‹ ${M.n}</button><p class="big">Montar refeição · ${M.n}</p><p class="small">Dia ${tipo()} · alvo P ${T.p} · H ${T.h} · G ${T.g} g · ${4*T.p+4*T.h+9*T.g} kcal. Legumes à descrição (fora das contas).</p>`;
 if(S.mbs.length){const r=mbSolve(S.mbs,T,S.mbl);
-o+=card("Quanto comer",S.mbs.map((i,j)=>{const f=MBF[i],g=r.x[j],lk=i in S.mbl;return `<div class="kv" style="display:block"><p style="color:#f2f4f8;font-weight:600">${f.u?g/f.u+" ovo"+(g/f.u>1?"s":"")+" ("+g+" g)":g+" g"} · ${f.n} <span class="small">(${f.st})${f.y?` · cru: ~${Math.round(g/f.y/5)*5} g`:""}</span></p>
-<div style="display:flex;gap:8px;align-items:center"><input type="range" min="0" max="${f.u?f.u*6:Math.max(400,f.d*3)}" step="${f.u||5}" value="${g}" data-bs="${i}" style="flex:1"><button class="pill ${lk?"on":""}" data-b="lock:${i}:${g}">${lk?"🔒":"🔓"}</button><button class="pill" data-b="rm:${i}">✕</button></div></div>`}).join("")+
+o+=card("Quanto comer",S.mbs.map((i,j)=>{const f=MBF[i],g=r.x[j],lk=i in S.mbl;return `<div class="kv" style="display:block"><p style="color:#f2f4f8;font-weight:600">${mbQty(f,g)} · ${f.n} <span class="small">(${f.st})${f.y?` · cru: ~${Math.round(g/f.y/5)*5} g`:""}</span></p>
+<div style="display:flex;gap:8px;align-items:center"><input type="range" min="0" max="${f.u?Math.max(f.u*6,f.d*3):Math.max(400,f.d*3)}" step="${f.u||5}" value="${g}" data-bs="${i}" style="flex:1"><button class="pill ${lk?"on":""}" data-b="lock:${i}:${g}">${lk?"🔒":"🔓"}</button><button class="pill" data-b="rm:${i}">✕</button></div></div>`}).join("")+
 `<p>Total: P ${Math.round(r.P)} (${dif(r.P,T.p)}) · H ${Math.round(r.H)} (${dif(r.H,T.h)}) · G ${Math.round(r.G)} (${dif(r.G,T.g)}) · ${Math.round(r.K)} kcal (${dif(r.K,4*T.p+4*T.h+9*T.g)})</p><p class="small">Mexer numa barra fixa esse alimento (🔒) e recalcula os outros. Verde = dentro de ±8%.</p><button class="pill" data-b="fav">⭐ Guardar favorito</button> <button class="pill" data-b="clr">Limpar</button>`)}
 const fv=favs();if(fv.length)o+=card("Favoritos",fv.map((f,k)=>`<div style="display:flex;gap:6px;margin:4px 0"><button class="pill" style="flex:1;text-align:left" data-b="lf:${k}">${f.n}</button><button class="pill" data-b="df:${k}">✕</button></div>`).join(""));
 o+=card("Adicionar alimentos",`<input id="mbq" placeholder="Procurar (ex.: feijão, atum, ovo)" value="${S.mbq}" style="width:100%;padding:10px;border-radius:10px;border:1px solid #333;background:#111;color:#fff;font-size:16px"><div>${MBF.map((f,i)=>[f,i]).filter(([f])=>!q||f.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(q.normalize("NFD").replace(/[\u0300-\u036f]/g,""))).map(([f,i])=>`<button class="pill ${S.mbs.includes(i)?"on":""}" data-b="tg:${i}" style="margin:3px">${S.mbs.includes(i)?"✓ ":""}${f.n}</button>`).join("")}</div>`);
