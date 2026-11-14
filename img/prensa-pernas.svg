@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" width="400" height="230" role="img">
+<title>Prensa de pernas a 45 graus</title>
+<rect width="400" height="230" fill="#f8fafc"/>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 Z" fill="#2563eb"/>
+  </marker>
+</defs>
+<line x1="16" y1="208" x2="384" y2="208" stroke="#e2e8f0" stroke-width="3"/>
+
+<g stroke="#64748b" stroke-width="8" fill="none" stroke-linecap="round">
+  <path d="M96 198 L340 36"/>
+  <path d="M64 198 L308 36"/>
+</g>
+<path d="M96 198 h28" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M96 198 l20 -20" fill="none" stroke="#2563eb" stroke-width="2"/>
+<text x="128" y="192" font-family="sans-serif" font-size="14" fill="#2563eb">45º</text>
+<!-- seat and backrest -->
+<path d="M48 168 L128 176 L118 198 L58 190 Z" fill="#0f172a"/>
+<path d="M48 168 L28 132" stroke="#0f172a" stroke-width="12" stroke-linecap="round"/>
+<!-- torso in the seat -->
+<path d="M118 172 L52 148" stroke="#1d4e89" stroke-width="14" stroke-linecap="round"/>
+<circle cx="40" cy="136" r="14" fill="#f3c7a1"/>
+<path d="M28 130 q12 -16 26 0" fill="#3a2a22"/>
+<!-- footplate in steel, then the shin and both feet on it -->
+<path d="M200 150 L292 222" stroke="#64748b" stroke-width="14" stroke-linecap="round"/>
+<path d="M118 170 L176 112 L228 164" fill="none" stroke="#0f172a" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="222" cy="158" rx="16" ry="8" transform="rotate(42 222 158)" fill="#f3c7a1" stroke="#0f172a" stroke-width="2"/>
+<ellipse cx="240" cy="176" rx="16" ry="8" transform="rotate(42 240 176)" fill="#e7b48a" stroke="#0f172a" stroke-width="2"/>
+<path d="M220 78 L286 36" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arr)"/>
+</svg>

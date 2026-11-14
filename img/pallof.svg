@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" width="400" height="230" role="img">
+<title>Press Pallof, visto de cima</title>
+<rect width="400" height="230" fill="#f8fafc"/>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 Z" fill="#2563eb"/>
+  </marker>
+</defs>
+
+<rect x="150" y="24" width="120" height="190" rx="16" fill="#e8eef5"/>
+<text x="16" y="22" font-family="sans-serif" font-size="13" fill="#64748b">visto de cima</text>
+<rect x="16" y="36" width="22" height="28" rx="3" fill="#64748b"/>
+<circle cx="46" cy="50" r="6" fill="none" stroke="#0f172a" stroke-width="3"/>
+<path d="M52 50 H198" stroke="#d97706" stroke-width="3"/>
+<!-- head at the front, then torso, then feet: chest points to the top -->
+<circle cx="210" cy="78" r="16" fill="#f3c7a1"/>
+<ellipse cx="210" cy="128" rx="26" ry="36" fill="#1d4e89"/>
+<ellipse cx="196" cy="168" rx="8" ry="16" fill="#0f172a"/>
+<ellipse cx="224" cy="168" rx="8" ry="16" fill="#0f172a"/>
+<!-- arms locked forward; hands meet the cable at 90 degrees to the body -->
+<path d="M196 108 L204 50" stroke="#f3c7a1" stroke-width="7" stroke-linecap="round"/>
+<path d="M224 108 L214 50" stroke="#f3c7a1" stroke-width="7" stroke-linecap="round"/>
+<circle cx="206" cy="50" r="7" fill="#f3c7a1" stroke="#0f172a" stroke-width="2"/>
+<path d="M236 112 V62" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arr)"/>
+</svg>

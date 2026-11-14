@@ -1,0 +1,16 @@
+Ilustrações do ginásio (SVG)
+
+Cada ficheiro mostra um exercício do plano, desenhado de raiz para esta app:
+
+- puxada-alta.svg — puxada alta à frente na polia, pega neutra (triângulo até ao topo do peito)
+- press-peito.svg — press de peito na máquina convergente (pegas para o meio do peito)
+- remada-baixa.svg — remada sentada na polia baixa, pega fechada, tronco vertical
+- pallof.svg — press Pallof (braços à frente, resistir à rotação; visto de cima)
+- prensa-pernas.svg — prensa de pernas a 45º, joelhos cerca de 90º
+- mesa-flexora.svg — mesa flexora, deitado, posteriores
+- woodchopper.svg — woodchopper com a polia à altura do ombro (não em cima nem em baixo)
+- crunch-polia.svg — crunch na polia alta, tronco a fletir, joelhos no chão
+
+Origem: ilustrações originais. Não são fotografias, nem imagens de stock, nem ficheiros de terceiros.
+Licença: CC0 1.0 (domínio público). Podes copiar, modificar e redistribuir.
+https://creativecommons.org/publicdomain/zero/1.0/
