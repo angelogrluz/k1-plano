@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" width="400" height="230" role="img">
+<title>Crunch na polia alta</title>
+<rect width="400" height="230" fill="#f8fafc"/>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 Z" fill="#2563eb"/>
+  </marker>
+</defs>
+<line x1="16" y1="208" x2="384" y2="208" stroke="#e2e8f0" stroke-width="3"/>
+
+<line x1="300" y1="20" x2="300" y2="200" stroke="#64748b" stroke-width="8" stroke-linecap="round"/>
+<circle cx="286" cy="32" r="8" fill="none" stroke="#0f172a" stroke-width="4"/>
+<rect x="312" y="60" width="16" height="60" rx="2" fill="#94a3b8"/>
+<!-- kneeling, hips back, spine in a C -->
+<ellipse cx="168" cy="200" rx="22" ry="8" fill="#0f172a"/>
+<ellipse cx="214" cy="200" rx="22" ry="8" fill="#0f172a"/>
+<path d="M188 196 C160 170 148 150 156 128 C164 106 190 96 206 108" fill="none" stroke="#1d4e89" stroke-width="16" stroke-linecap="round"/>
+<circle cx="214" cy="96" r="14" fill="#f3c7a1"/>
+<path d="M202 88 q12 -16 26 2" fill="#3a2a22"/>
+<!-- hands beside the head, not pulling as arms -->
+<path d="M200 108 C208 96 214 92 220 100" fill="none" stroke="#f3c7a1" stroke-width="7" stroke-linecap="round"/>
+<circle cx="222" cy="102" r="5" fill="#f3c7a1" stroke="#0f172a" stroke-width="2"/>
+<!-- rope from high pulley to the hands -->
+<path d="M286 36 C250 50 236 70 224 98" fill="none" stroke="#d97706" stroke-width="3"/>
+<!-- trunk flexion, not an arm pull -->
+<path d="M150 120 C170 150 176 160 168 176" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arr)"/>
+</svg>

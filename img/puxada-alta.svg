@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" width="400" height="230" role="img">
+<title>Puxada alta, pega neutra</title>
+<rect width="400" height="230" fill="#f8fafc"/>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 Z" fill="#2563eb"/>
+  </marker>
+</defs>
+<line x1="16" y1="208" x2="384" y2="208" stroke="#e2e8f0" stroke-width="3"/>
+
+<g stroke="#64748b" stroke-width="7" fill="none" stroke-linecap="round">
+  <path d="M330 30 v168"/>
+  <path d="M368 30 v176"/>
+  <path d="M312 30 h64"/>
+</g>
+<rect x="344" y="78" width="16" height="58" rx="2" fill="#94a3b8"/>
+<rect x="347" y="86" width="10" height="9" fill="#0f172a"/>
+<rect x="347" y="100" width="10" height="9" fill="#0f172a"/>
+<rect x="347" y="114" width="10" height="9" fill="#0f172a"/>
+<circle cx="300" cy="38" r="8" fill="none" stroke="#0f172a" stroke-width="4"/>
+<!-- seat and thigh pad -->
+<rect x="150" y="158" width="108" height="16" rx="4" fill="#0f172a"/>
+<rect x="236" y="118" width="18" height="46" rx="6" fill="#0f172a"/>
+<!-- hips on the seat, thighs under the pad, feet down -->
+<path d="M178 150 L248 150" stroke="#1d4e89" stroke-width="14" stroke-linecap="round"/>
+<path d="M248 154 V198" stroke="#1d4e89" stroke-width="12" stroke-linecap="round"/>
+<ellipse cx="248" cy="204" rx="14" ry="6" fill="#0f172a"/>
+<!-- torso from the hips, slight lean back -->
+<path d="M176 150 L150 100" stroke="#1d4e89" stroke-width="16" stroke-linecap="round"/>
+<circle cx="146" cy="90" r="15" fill="#f3c7a1"/>
+<path d="M132 84 q14 -20 30 0" fill="#3a2a22"/>
+<!-- arm pulling the triangle to the upper chest -->
+<path d="M164 116 L208 96" stroke="#f3c7a1" stroke-width="8" stroke-linecap="round"/>
+<path d="M200 84 h26 l-13 18 z" fill="#fff" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/>
+<path d="M213 86 C245 62 275 46 300 42" fill="none" stroke="#d97706" stroke-width="3"/>
+<path d="M236 52 v32" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arr)"/>
+</svg>

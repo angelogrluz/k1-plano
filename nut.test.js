@@ -115,8 +115,8 @@ assert.ok(!/queijo cottage/i.test(visible("Lanche pré-treino","duro")));
 const app=fs.readFileSync("./app.js","utf8");
 const sw=fs.readFileSync("./sw.js","utf8");
 const html=fs.readFileSync("./index.html","utf8");
-assert.ok(sw.includes('const C="k1-natal-v14"'));
-assert.ok(!sw.includes("k1-natal-v13"));
+assert.ok(sw.includes('const C="k1-natal-v16"'));
+assert.ok(!sw.includes("k1-natal-v15"));
 assert.ok(sw.includes("./nut.js"));
 assert.ok(html.includes('src="nut.js"'));
 const src=app+fs.readFileSync("./mb.js","utf8")+fs.readFileSync("./nut.js","utf8");
@@ -194,5 +194,91 @@ nearUnit(built.x[0],21);
 nearUnit(built.x[2],10);
 nearUnit(built.x[3],75);
 assert.ok(built.x.every(v=>isFinite(v)));
+
+function grabBlock(name){
+  const start=app.indexOf("const "+name+"=");
+  assert.ok(start>=0,name);
+  let i=start+("const "+name+"=").length,depth=0,str=null,esc=false;
+  for(;i<app.length;i++){
+    const c=app[i];
+    if(str){if(esc){esc=false;continue}if(c==="\\"){esc=true;continue}if(c===str)str=null;continue}
+    if(c==='"'||c==="'"||c==="`"){str=c;continue}
+    if(c==="{"||c==="["||c==="(")depth++;
+    else if(c==="}"||c==="]"||c===")")depth--;
+    else if(c===";"&&depth===0)break;
+  }
+  return eval("("+app.slice(start+("const "+name+"=").length,i)+")");
+}
+const GYMX=grabBlock("GYMX");
+assert.deepStrictEqual(Object.keys(GYMX),["A","B"]);
+assert.deepStrictEqual(GYMX.A.ex.map(e=>e.n),[
+  "Puxada alta à frente na polia, pega neutra",
+  "Press de peito na máquina convergente",
+  "Remada sentada na polia baixa, pega fechada",
+  "Press Pallof na polia"
+]);
+assert.deepStrictEqual(GYMX.B.ex.map(e=>e.n),[
+  "Prensa de pernas 45º",
+  "Mesa flexora (deitado ou sentado)",
+  "Woodchopper na polia à altura do ombro",
+  "Crunch abdominal na polia alta"
+]);
+const gExKey=e=>e.k||e.n;
+assert.strictEqual(gExKey(GYMX.A.ex[0]),"Puxada alta");
+assert.strictEqual(gExKey(GYMX.A.ex[2]),"Puxada baixa (remada sentado no cabo)");
+assert.strictEqual(gExKey(GYMX.A.ex[3]),"Pallof press");
+assert.strictEqual(gExKey(GYMX.A.ex[1]),"Press de peito na máquina convergente");
+const want={
+"Puxada alta":{r:"4–6",d:"2,5–3'",c:"triângulo"},
+"Press de peito na máquina convergente":{r:"4–6",d:"2,5–3'",c:"meio do peito"},
+"Puxada baixa (remada sentado no cabo)":{r:"4–6",d:"2,5–3'",c:"abdómen"},
+"Pallof press":{r:"10 por lado",d:"60''",c:"resistir à rotação"},
+"Prensa de pernas 45º":{r:"5–6",d:"2,5–3'",c:"90º"},
+"Mesa flexora (deitado ou sentado)":{r:"5–6",d:"2,5'",c:"posteriores"},
+"Woodchopper na polia à altura do ombro":{r:"6 explosivas por lado",d:"2'",c:"pagaiada"},
+"Crunch abdominal na polia alta":{r:"12",d:"60''",c:"sem puxar com os braços"}
+};
+for(const sess of ["A","B"])for(const e of GYMX[sess].ex){
+  const key=gExKey(e),w=want[key]||want[e.n];
+  assert.ok(w,e.n);
+  assert.strictEqual(e.s,"3",e.n);
+  assert.strictEqual(e.r,w.r,e.n);
+  assert.strictEqual(e.d,w.d,e.n);
+  assert.ok(e.c.includes(w.c),e.n);
+  assert.ok(fs.existsSync("./img/"+e.img+".svg"),e.img);
+  assert.ok(sw.includes("./img/"+e.img+".svg"),"sw "+e.img);
+  assert.ok(!/\.(jpg|png|webp)$/.test(e.img));
+}
+assert.ok(GYMX.A.ex[3].c.includes("Opcional")&&GYMX.B.ex[3].c.includes("Opcional"));
+const SEM1622=grabBlock("SEM1622");
+assert.deepStrictEqual(SEM1622.gin,{"2":"A","4":"B"});
+assert.strictEqual(SEM1622.ini,"2026-11-16");
+assert.strictEqual(SEM1622.fim,"2026-11-22");
+assert.deepStrictEqual(SEM1622.t,["descanso","normal","duro","normal","duro","normal","duro"]);
+SEM1622.sch.forEach((day,i)=>{
+  const gins=day.filter(b=>b[0]==="gin");
+  if(i===2){assert.strictEqual(gins[0][4],"A");assert.strictEqual(gins[0][1],"fim do dia");}
+  else if(i===4){assert.strictEqual(gins[0][4],"B");assert.strictEqual(gins[0][1],"fim do dia");}
+  else assert.strictEqual(gins.length,0,i);
+  assert.ok(!day.some(b=>b[0]==="pis"));
+  if(i>0)assert.strictEqual(day[0][1],"almoço");
+});
+assert.ok(SEM1622.sch[6][0][2].includes("18–22"));
+assert.ok(SEM1622.sch[5][0][2].includes("150 m"));
+assert.ok(app.includes("saíres da água")&&app.includes("acordares"));
+assert.ok(!/testosterona/i.test(app));
+assert.ok(app.includes("const gExKey=e=>e.k||e.n;"));
+assert.ok(app.includes("GL()[key]"));
+assert.ok(!app.includes("Sessão C")&&!app.includes("sessão C"));
+const GSCHED=grabBlock("GSCHED");
+assert.deepStrictEqual(GSCHED,{A:{"1":"A","4":"B"},B:{"4":"A"}});
+assert.ok(!JSON.stringify(GSCHED).includes("C"));
+const GYM=grabBlock("GYM");
+assert.strictEqual(GYM.length,2);
+assert.ok(GYM[0][0].startsWith("A —"));
+assert.ok(GYM[1][0].startsWith("B —"));
+assert.ok(!/testosterona/i.test(app));
+assert.ok(app.includes("k1-gin-series")&&app.includes("k1-historico"));
+for(const rel of sw.match(/\.\/img\/[^"]+/g)||[])assert.ok(fs.existsSync(rel.slice(2)),rel);
 
 console.log("nut.test.js ok", Object.keys(GOLD).length, "placas");

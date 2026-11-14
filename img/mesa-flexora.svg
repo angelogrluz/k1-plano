@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" width="400" height="230" role="img">
+<title>Mesa flexora deitado</title>
+<rect width="400" height="230" fill="#f8fafc"/>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 Z" fill="#2563eb"/>
+  </marker>
+</defs>
+<line x1="16" y1="208" x2="384" y2="208" stroke="#e2e8f0" stroke-width="3"/>
+
+<rect x="70" y="128" width="210" height="16" rx="5" fill="#0f172a"/>
+<rect x="78" y="144" width="12" height="40" fill="#64748b"/>
+<rect x="250" y="144" width="12" height="40" fill="#64748b"/>
+<!-- prone body -->
+<circle cx="78" cy="116" r="14" fill="#f3c7a1"/>
+<path d="M66 110 q12 -16 26 2" fill="#3a2a22"/>
+<path d="M92 122 H236" stroke="#1d4e89" stroke-width="16" stroke-linecap="round"/>
+<path d="M236 126 L286 138" stroke="#0f172a" stroke-width="12" stroke-linecap="round"/>
+<!-- curled shank -->
+<path d="M286 138 L258 78" stroke="#0f172a" stroke-width="11" stroke-linecap="round"/>
+<!-- roller -->
+<rect x="236" y="70" width="40" height="14" rx="7" fill="#0f172a"/>
+<path d="M300 150 L286 78" stroke="#64748b" stroke-width="5" fill="none"/>
+<path d="M300 120 C330 100 300 70 270 64" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arr)"/>
+</svg>

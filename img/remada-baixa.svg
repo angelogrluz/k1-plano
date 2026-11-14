@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" width="400" height="230" role="img">
+<title>Remada sentada, polia baixa, pega fechada</title>
+<rect width="400" height="230" fill="#f8fafc"/>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 Z" fill="#2563eb"/>
+  </marker>
+</defs>
+<line x1="16" y1="208" x2="384" y2="208" stroke="#e2e8f0" stroke-width="3"/>
+
+<rect x="28" y="148" width="30" height="52" rx="3" fill="#64748b"/>
+<circle cx="58" cy="162" r="9" fill="none" stroke="#0f172a" stroke-width="4"/>
+<rect x="86" y="156" width="12" height="46" rx="2" fill="#0f172a"/>
+<line x1="230" y1="48" x2="230" y2="178" stroke="#2563eb" stroke-width="2" stroke-dasharray="3 4" opacity=".5"/>
+<!-- legs braced, torso a vertical column -->
+<path d="M98 186 L140 168 H210" fill="none" stroke="#0f172a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M210 172 V78" stroke="#1d4e89" stroke-width="16" stroke-linecap="round"/>
+<circle cx="210" cy="60" r="15" fill="#f3c7a1"/>
+<path d="M196 52 q14 -20 30 2" fill="#3a2a22"/>
+<!-- elbow back, closed grip into the abdomen -->
+<path d="M210 100 L236 118 L186 128" fill="none" stroke="#f3c7a1" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M174 118 l16 16 l-20 2 z" fill="#fff" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/>
+<path d="M62 150 C110 120 140 112 176 122" fill="none" stroke="#d97706" stroke-width="3"/>
+<path d="M110 128 H168" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arr)"/>
+</svg>

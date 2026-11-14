@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" width="400" height="230" role="img">
+<title>Press de peito convergente</title>
+<rect width="400" height="230" fill="#f8fafc"/>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 Z" fill="#2563eb"/>
+  </marker>
+</defs>
+<line x1="16" y1="208" x2="384" y2="208" stroke="#e2e8f0" stroke-width="3"/>
+
+<rect x="168" y="78" width="64" height="96" rx="8" fill="#0f172a"/>
+<rect x="160" y="168" width="80" height="16" rx="4" fill="#64748b"/>
+<circle cx="200" cy="62" r="16" fill="#f3c7a1"/>
+<path d="M186 52 q14 -20 28 0" fill="#3a2a22"/>
+<rect x="182" y="84" width="36" height="70" rx="10" fill="#1d4e89"/>
+<path d="M182 112 H132" stroke="#f3c7a1" stroke-width="8" stroke-linecap="round"/>
+<path d="M218 112 H268" stroke="#f3c7a1" stroke-width="8" stroke-linecap="round"/>
+<!-- converging handles, angled in toward the sternum -->
+<g stroke="#0f172a" stroke-width="8" stroke-linecap="round">
+  <path d="M118 128 L146 108"/>
+  <path d="M282 128 L254 108"/>
+</g>
+<g stroke="#94a3b8" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85">
+  <path d="M70 168 C90 150 100 140 118 132"/>
+  <path d="M330 168 C310 150 300 140 282 132"/>
+</g>
+<!-- ghost wide start -->
+<g stroke="#94a3b8" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 3" opacity=".7">
+  <path d="M104 142 L128 126"/>
+  <path d="M296 142 L272 126"/>
+</g>
+<path d="M112 138 L142 114" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arr)"/>
+<path d="M288 138 L258 114" fill="none" stroke="#2563eb" stroke-width="3" marker-end="url(#arr)"/>
+<circle cx="200" cy="118" r="4" fill="#dc2626"/>
+</svg>
